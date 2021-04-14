@@ -51,23 +51,23 @@ class APF_Improved(APF):
 
 if __name__ == '__main__':
 
-    k_att, k_rep = 0.5, 100.0
-    rr = 1000
-    step_size, max_iters, goal_threashold = 10, 600, 0.9
-    step_size_ = 10
+    k_att, k_rep = 0.5, 1.0
+    rr = 5
+    step_size, max_iters, goal_threashold = 0.2, 500, 0.2
+    step_size_ = 0.2
 
 
 
-    start, goal = (0, 0), (14, 4200)
+    start, goal = (0, 0), (1.4, 42.00)
     is_plot = True
     if is_plot:
         img = plt.imread("bpop.png")
         fig, ax = plt.subplots()
         fig.set_size_inches(15, 10)
         plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
-        ax.imshow(img, extent=[-4122, 6028, -400, 4675], alpha=0.96)
-        plt.xlim([-4122, 6028])
-        plt.ylim([-400, 4675])
+        ax.imshow(img, extent=[-41.22, 60.28, -4.00, 46.75], alpha=0.96)
+        plt.xlim([-41.22, 60.28])
+        plt.ylim([-4.00, 46.75])
         plt.xlabel('East (m)')
         plt.ylabel('North (m)')
         plt.grid(alpha=0.2)
@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
 
 
-    obs = [[-40, 800], [20, 500], [30, 250], [60, 2000], [6, 3000], [100, 1260], [11, 2400], [14, 1400]]
+    obs = [[-4, 8], [2, 5], [3, 2.5], [6, 20.00], [6, 30.00], [10.0, 12.60], [1.1, 24.00], [1.4, 14.00]]
 
     print('obstacles: {0}'.format(obs))
     for i in range(0):
@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
     if is_plot:
         for OB in obs:
-            circle = Circle(xy=(OB[0], OB[1]), radius=(rr/4), alpha=0.3)
+            circle = Circle(xy=(OB[0], OB[1]), radius=(rr/2), alpha=0.3)
             ax.add_patch(circle)
             plt.plot(OB[0], OB[1], 'xk')
     t1 = time.time()
@@ -162,11 +162,11 @@ if __name__ == '__main__':
 
 
             #plt.plot(DS_px, DS_py, 'o', color='red')
-            ows_Info = plt.text(3750, 2300,
+            ows_Info = plt.text(37.50, 23.00,
                                 f'Path Planning Success \nThe Way Points for the route: ',
                                 fontsize=10, color='black')
 
-            ows_Info2 = plt.text(3750, 2000,
+            ows_Info2 = plt.text(37.50, 20.00,
                                 f'Downs SAp \nThe Way Points for the route: {DS_px}',
                                 fontsize=10, color='black')
 
