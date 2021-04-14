@@ -4,11 +4,8 @@ import matplotlib.pyplot as plt
 import math
 from matplotlib.patches import Circle
 import random
-
-
-
-
-
+import time
+import numpy as np
 
 def check_vec_angle(v1: Vector2d, v2: Vector2d):
     v1_v2 = v1.deltaX * v2.deltaX + v1.deltaY * v2.deltaY
@@ -42,7 +39,7 @@ class APF_Improved(APF):
             # obstacle = Vector2d(0, 0)
             obs_to_rob = self.current_pos - obstacle
             rob_to_goal = self.goal - self.current_pos
-            if (obs_to_rob.length > self.rr):
+            if (obs_to_rob.length > (self.rr)):
                 pass
             else:
                 rep_1 = Vector2d(obs_to_rob.direction[0], obs_to_rob.direction[1]) * self.k_rep * (
@@ -54,28 +51,31 @@ class APF_Improved(APF):
 
 if __name__ == '__main__':
 
-    k_att, k_rep = 1.0, 10.0
-    rr = 50
-    step_size, max_iters, goal_threashold = 5.0, 500, .4
-    step_size_ = 7
+    k_att, k_rep = 1.0, 100.0
+    rr = 1000
+    step_size, max_iters, goal_threashold = 15, 600, 4.3
+    step_size_ = 15
 
 
 
-    start, goal = (0, 0), (15, 400)
+    start, goal = (0, 0), (14, 4180)
     is_plot = True
     if is_plot:
-        img = plt.imread("bpo.png")
+        img = plt.imread("bpop.png")
         fig, ax = plt.subplots()
         fig.set_size_inches(15, 10)
         plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
-        ax.imshow(img, extent=[-412.2, 602.8, -40.0, 467.5], alpha=0.96)
-        plt.xlim([-412.2, 602.8])
-        plt.ylim([-40.0, 467.5])
+        ax.imshow(img, extent=[-4122, 6028, -400, 4675], alpha=0.96)
+        plt.xlim([-4122, 6028])
+        plt.ylim([-400, 4675])
         plt.xlabel('East (m)')
         plt.ylabel('North (m)')
         plt.grid(alpha=0.2)
         plt.plot(start[0], start[1], '*r')
         plt.plot(goal[0], goal[1], '*r')
+
+        #axes2 = fig.add_axes([0.07, 0.55, 0.35, 0.3])
+
 
         # fig = plt.figure(figsize=(16, 16))
         # subplot = fig.add_subplot(111)
@@ -84,7 +84,20 @@ if __name__ == '__main__':
         # subplot.plot(start[0], start[1], '*r')
         # subplot.plot(goal[0], goal[1], '*r')
 
-    obs = [[-40, 80], [20, 50], [30, 25], [60, 200], [6, 300], [100, 126], [11, 240], [14, 14]]
+        corc = 40
+        sine_degt1 = math.sin(math.radians(corc))
+        cos_degt1 = math.cos(math.radians(corc))
+        z1 = 10 * sine_degt1
+        p1 = 10 * cos_degt1
+        Pio = plt.quiver(2750, 550, z1, p1, scale=110, color='white', pivot='middle')
+
+
+
+
+
+
+
+    obs = [[-40, 800], [20, 500], [30, 250], [60, 2000], [6, 3000], [100, 1260], [11, 2400], [14, 1400]]
 
     print('obstacles: {0}'.format(obs))
     for i in range(0):
@@ -92,10 +105,11 @@ if __name__ == '__main__':
 
     if is_plot:
         for OB in obs:
-            circle = Circle(xy=(OB[0], OB[1]), radius=rr, alpha=0.3)
+            circle = Circle(xy=(OB[0], OB[1]), radius=(rr/4), alpha=0.3)
             ax.add_patch(circle)
             plt.plot(OB[0], OB[1], 'xk')
-
+    t1 = time.time()
+    #for i in range(1000):
 
     # path plan
     if is_plot:
@@ -115,9 +129,57 @@ if __name__ == '__main__':
             path_.append(path[-1])
         print('planed path points:{}'.format(path_))
         print('path plan success')
+
+
         if is_plot:
             px, py = [K[0] for K in path_], [K[1] for K in path_]
-            plt.plot(px, py, '^k')
+            print('pox ',px)
+            print('length of pox : ', len(px))
+            new_px =[]
+            new_py =[]
+            for i in range(len(px)):
+                new_px.append(round(px[i],3))
+                new_py.append(round(py[i], 3))
+
+            print('New Px : ', new_px)
+            print('New Py : ', new_py)
+
+            DS_px = []
+            DS_py = []
+            for i in range(len(new_px)):
+                if i%4 == 0:
+                    DS_px.append(round(new_px[i], 3))
+                    DS_py.append(round(new_py[i], 3))
+            print('Length of DSx : ', len(DS_px))
+            print('Length of DSy : ', len(DS_py))
+            print('DS px : ',DS_px )
+            print('DS py : ', DS_py)
+
+            print('poy',py)
+            print('length of poy : ', len(py))
+
+            ax.plot(px, py, '^k')
+
+
+            #plt.plot(DS_px, DS_py, 'o', color='red')
+            ows_Info = plt.text(3750, 2300,
+                                f'Path Planning Success \nThe Way Points for the route: ',
+                                fontsize=10, color='black')
+
+            ows_Info2 = plt.text(3750, 2000,
+                                f'Downs SAp \nThe Way Points for the route: {DS_px}',
+                                fontsize=10, color='black')
+
             plt.show()
+
+            # axes2.plot(DS_px, DS_py, 'r')
+            # axes2.set_xlabel('X Axis')
+            # axes2.set_ylabel('Y Axis')
+            # axes2.set_title('Square function')
+            # plt.show()
+
+
     else:
         print('path plan failed')
+    t2 = time.time()
+    print('Time:{},time2:{}'.format(t2-t1,(t2-t1)/1000))
